@@ -130,7 +130,7 @@
         }
         .reward-name {
             position: absolute;
-            top: 5%;
+            top: 10%;
             text-align: center;
             color: white;
             width: 100%;
@@ -139,21 +139,24 @@
         }
         .result-btn {
             position: absolute;
-            top: 23%;
-            right: 20px;
-            text-align: right;
+            bottom: 20px;
+            left: 20px;
+            text-align: left;
             color: white;
-            width: 200px;
-            height: 50px;
-
         }
-        a {
-              text-decoration: none; /* 去掉下划线 */
-              background-color: rgba(51, 102, 204, 0.3); /* 背景透明 */
-              border: 1px solid rgba(61, 112, 214); /* 边框样式 */
-              border-radius: 3px; /* 圆角半径 */
-              color: rgba(61, 112, 214); /* 超链接颜色为白色 */
-              padding: 6px 13px; /* 可选：添加内边距 */
+        .result-a {
+            display: inline-block;
+            font-family: inherit;
+            font-size: 100%;
+            padding: 10px;
+            color: #43c666;
+            background-color: transparent;
+            border: 2px solid #43c666;
+            border-radius: 10px;
+            text-decoration: none; /* 去掉下划线 */
+            margin: 5px;
+            text-align: center;
+            width: 130px;
         }
     </style>
 </head>
@@ -162,11 +165,11 @@
     <div class="reward-name">
         <h1 class="reward-title" id="lotteryValue"></h1>
     </div>
-    <div class="result-btn">
-        <a href="./result.html" target="_blank">获奖名单</a>
-    </div>
 </div>
 <div id="result" class="result">
+</div>
+<div class="result-btn">
+        <a class="result-a" href="./result.html" target="_blank">获奖名单</a>
 </div>
 <div id="tools" class="tools">
     <button
@@ -190,9 +193,15 @@
 <script type="text/javascript" src="static/js/init.js"></script>
 <script type="text/javascript">
     function init(){
-        // 在这里将 this.lottery_cfg 变量的值插入到 <h1> 元素中
-        document.getElementById("lotteryValue").innerText = lottery_cfg['desc'] + "   " + lottery_cfg['reward'];
-        console.log(member);
+         if ("desc" in this.lottery_cfg && "reward" in this.lottery_cfg)
+        {
+            // 在这里将 this.lottery_cfg 变量的值插入到 <h1> 元素中
+            document.getElementById("lotteryValue").innerText = this.lottery_cfg['desc'] + "   " + this.lottery_cfg['reward'];
+        }
+         else {
+             document.getElementById("lotteryValue").innerText = "";
+         }
+        // console.log(member);
         var speed = function(){
             return [0.1 * Math.random() + 0.01, -(0.1 * Math.random() + 0.01)];
         };
@@ -268,6 +277,8 @@
 
                     } else {
                         if (bEnd) {
+                            // 在这里将 this.lottery_cfg 变量的值插入到 <h1> 元素中
+                            document.getElementById("lotteryValue").innerText = "";
                             $('#result').css('display', 'block').html('<span>' + '已抽完' + '</span>');
                             return
                         }
@@ -287,8 +298,13 @@
                             this.lucky_person = data['data']['lucky_person']
                             bEnd = !data['data']['has_next']
 
-                             // 在这里将 this.lottery_cfg 变量的值插入到 <h1> 元素中
-                        document.getElementById("lotteryValue").innerText = this.lottery_cfg['desc'] + "   " + this.lottery_cfg['reward'];
+                            if ("desc" in this.lottery_cfg && "reward" in this.lottery_cfg)
+                            {
+                                // 在这里将 this.lottery_cfg 变量的值插入到 <h1> 元素中
+                                document.getElementById("lotteryValue").innerText = this.lottery_cfg['desc'] + "   " + this.lottery_cfg['reward'];
+                            }
+
+
                         });
                     }
                     this.running = !this.running;
