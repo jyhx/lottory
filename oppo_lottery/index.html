@@ -242,8 +242,8 @@
                     textHeight: 14,
                     shape: 'sphere',
                     lock: false,
-                    stretchX: 2,
-                    stretchY: 1,
+                    stretchX: 1.7,
+                    stretchY: 0.8,
                 });
             },
             methods: {
@@ -266,26 +266,6 @@
                 },
                 draw: function(){
                     if(this.running){
-                        TagCanvas.SetSpeed('myCanvas', speed());
-                        var ret = this.lucky_person;
-                        $('#result').css('display', 'block').html('<span>' + ret.map((p) => p['name']).join('</span><span>') + '</span>');
-                        TagCanvas.Reload('myCanvas');
-                        setTimeout(function(){
-                            $('#main').addClass('mask');
-                        }, 300);
-
-
-                    } else {
-                        if (bEnd) {
-                            // 在这里将 this.lottery_cfg 变量的值插入到 <h1> 元素中
-                            document.getElementById("lotteryValue").innerText = "";
-                            $('#result').css('display', 'block').html('<span>' + '已抽完' + '</span>');
-                            return
-                        }
-                        $('#result').css('display', 'none');
-                        $('#main').removeClass('mask');
-                        TagCanvas.SetSpeed('myCanvas', [5, 1]);
-
                         fetch('/api/draw_lucky', {
                             method: "POST",
                             body: "",
@@ -294,18 +274,35 @@
                             }
                         }).then(response => response.json())
                         .then(data =>{
-                            this.lottery_cfg = data['data']['lottery_cfg']
+                            setTimeout(function(){
+                                $('#main').addClass('mask');
+                            }, 300);
                             this.lucky_person = data['data']['lucky_person']
                             bEnd = !data['data']['has_next']
-
-                            if ("desc" in this.lottery_cfg && "reward" in this.lottery_cfg)
+                            TagCanvas.SetSpeed('myCanvas', speed());
+                            var ret = this.lucky_person;
+                            $('#result').css('display', 'block').html('<span>' + ret.map((p) => p['name']).join('</span><span>') + '</span>');
+                            TagCanvas.Reload('myCanvas');
+                            if ("desc" in data['data']['lottery_cfg'] && "reward" in data['data']['lottery_cfg'])
                             {
+                                this.lottery_cfg = data['data']['lottery_cfg'];
                                 // 在这里将 this.lottery_cfg 变量的值插入到 <h1> 元素中
                                 document.getElementById("lotteryValue").innerText = this.lottery_cfg['desc'] + "   " + this.lottery_cfg['reward'];
                             }
-
-
                         });
+                    } else {
+                        if (bEnd) {
+                            // 在这里将 this.lottery_cfg 变量的值插入到 <h1> 元素中
+                            document.getElementById("lotteryValue").innerText = "";
+                            $('#result').css('display', 'block').html('<span>' + '已抽完' + '</span>');
+                            setTimeout(function(){
+                                $('#main').addClass('mask');
+                            }, 300);
+                            return
+                        }
+                        $('#result').css('display', 'none');
+                        $('#main').removeClass('mask');
+                        TagCanvas.SetSpeed('myCanvas', [5, 1]);
                     }
                     this.running = !this.running;
                 }
