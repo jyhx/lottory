@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="screen-orientation" content="portrait">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+    <title>年会抽奖小程序</title>
+    <link rel="stylesheet" type="text/css" href="static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="static/css/wall.css">
+    <style type="text/css">
+        .wall { 
+            overflow: scroll;
+            background-repeat: repeat;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+        }
+        .mask {
+            -webkit-filter:blur(5px);
+            filter:blur(5px);
+        }
+        #main {
+            -webkit-transition: all 1s;
+            transition: all 1s;
+        }
+        .result-list {
+            text-align: center;
+            color: #4de7c8;
+            font-size: 40px;
+            line-height: 40px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            font-family: '幼圆';
+        }
+        .result-title {
+            text-align: center;
+            color: #4de7c8;
+            font-size: 60px;
+            margin-top: 60px;
+            margin-bottom: 60px;
+            font-family: '幼圆';
+        }
+        .return-btn {
+            margin-top: 20px;
+            text-align: right;
+            margin-right: 30px;
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div id="main" class="wall">
+    <div class="return-btn">
+        <a href="/" target="_blank">返回</a>
+    </div>
+    <div class="result-title">获奖名单</div>
+    <div class="result-list" v-for="result in lucky_person">
+        {{result}}
+    </div>
+</div>
+<script type="text/javascript" src="static/js/vue.js"></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#main',
+        data: {
+            lucky_person: []
+        },
+        mounted () {
+            fetch('/api/get_lucky_person', {
+                method: "POST",
+                body: "",
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded"
+                }
+            })
+            .then(response => response.json())
+            .then(data =>{
+                lucky_person = data['data']['lucky_person']
+                                console.log(lucky_person)
+
+                lucky_person = lucky_person.sort((x, y) => { return y['lottery'] - x['lottery'];})
+                lucky_person = lucky_person.map(p => {return p['name'] + '  抽中：'+p['desc']+'，获得奖品：' + p['reward']})
+
+                console.log(lucky_person)
+                this.lucky_person = lucky_person
+            });
+        },
+    })
+</script>
+</body>
+</html>
