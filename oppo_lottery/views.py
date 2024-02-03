@@ -38,7 +38,7 @@ def check():
 
     p = getPersonById(iId)
     p.check = 1
-    return make_succ_response({'name': p.name, 'seat': p.seat})
+    return make_succ_response({'name': p.name, 'seat1': p.seat1, 'seat2': p.seat2})
 
 
 @app.route('/api/get_lottery_info', methods=['POST'])
