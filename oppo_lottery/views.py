@@ -96,6 +96,17 @@ def get_lucky_person():
     return make_succ_response(ret)
 
 
+@app.route('/api/clear_lottory_info', methods=['POST'])
+def clear_lottory_info():
+    global iCurLotteryIndex
+    iCurLotteryIndex = 0
+    for p in getAllWinner():
+        p.lottery = 0
+        p.desc = ""
+        p.reward = ""
+    return make_succ_empty_response()
+
+
 @app.route('/admin', methods=['GET', 'POST'])
 def clear_all():
     if request.method == 'GET':

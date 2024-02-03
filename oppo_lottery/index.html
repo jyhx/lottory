@@ -160,7 +160,7 @@
 <body>
 <div id="main" class="wall">
     <div class="reward-name">
-        <h1 class = "reward-title" id="lotteryValue"></h1>
+        <h1 class="reward-title" id="lotteryValue"></h1>
     </div>
     <div class="result-btn">
         <a href="./result.html" target="_blank">获奖名单</a>
@@ -169,6 +169,10 @@
 <div id="result" class="result">
 </div>
 <div id="tools" class="tools">
+    <button
+            class="pure-button"
+            @click="clear">{{'清空中奖'}}
+    </button>
     <button
             class="pure-button"
             @click="re">{{'返回'}}
@@ -234,6 +238,18 @@
                 });
             },
             methods: {
+                clear: function(){
+                        fetch('/api/clear_lottory_info', {
+                            method: "POST",
+                            body: "",
+                            headers: {
+                                "Content-type": "application/x-www-form-urlencoded"
+                            }
+                        }).then(response => response.json())
+                        .then(data =>{
+                            location.reload(false);
+                        });
+                },
                 re: function(){
                     $('#result').css('display', 'none');
                     $('#main').removeClass('mask');
